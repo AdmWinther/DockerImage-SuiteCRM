@@ -6,175 +6,33 @@ services:
     image: mariadb:10.6
     container_name: mariadb
     restart: always
-    volumes:
-      - /home/ec2-user/volumes/database:/var/lib/mysql
-      #this line needs to be executed just the first time. It is needed for making the users and databases.
-      #- /home/ec2-user/database_init.sql:/docker-entrypoint-initdb.d/database_init.sql
     ports:
       - "3306:3306"
     environment:
       ALLOW_EMPTY_PASSWORD: yes
-      MARIADB_ROOT_PASSWORD: zExky3-rozmev-puhdoz
+      MARIADB_ROOT_PASSWORD: root
     networks:
       - my-docker-network
-
-  james:
-    image: apache/james:jpa-3.8.2
-    container_name: james
-    restart: always
-    volumes:
-      - /home/ec2-user/mailetcontainer.xml:/root/conf/mailetcontainer.xml
-      - /home/ec2-user/smtpserver.xml:/root/conf/smtpserver.xml
-      - /home/ec2-user/imapserver.xml:/root/conf/imapserver.xml
-      - type: bind
-        source: /home/ec2-user/james-database.properties
-        target: /root/conf/james-database.properties
-
-      - type: bind
-        source: /home/ec2-user/jdbc.jar
-        target: /root/libs/jdbc.jar
-
-      - type: bind
-        source: /home/ec2-user/keystore
-        target: /root/conf/keystore
-
-    ports:
-      - "25:25"
-      - "110:110"
-      - "143:143"
-      - "465:465"
-      - "587:587"
-      - "993:993"
-      #Port 8000 is used for the REST API of James
-      - "8000:8000"
-
-    networks:
-      - my-docker-network
-    depends_on:
-      - mariadb
 
   suitecrm:
-    image: bitnami/suitecrm:8.6.0
+    image: ggg:latest
     container_name: crm
-    volumes:
-      - /home/ec2-user/crm_https_ssl_certificate.crt:/opt/bitnami/apache/conf/bitnami/certs/server.crt
-      - /home/ec2-user/crm_https_ssl_chain_certificate.crt:/opt/bitnami/apache/conf/bitnami/certs/server-ca.crt
-      - /home/ec2-user/crm_https_ssl_private_key.key:/opt/bitnami/apache/conf/bitnami/certs/server.key
-
-      - /home/ec2-user/volumes/suitecrm:/bitnami/suitecrm
-    environment:
-      ALLOW_EMPTY_PASSWORD: no
-      #SUITECRM_USERNAME: admin
-      #SUITECRM_PASSWORD: admin
-      SUITECRM_DATABASE_USER: crmdb
-      SUITECRM_DATABASE_PASSWORD: wubsy6-tixxox-fytqEj
-      SUITECRM_DATABASE_NAME: crmdb
+    # environment:
+    #   ALLOW_EMPTY_PASSWORD: no
+    #   #SUITECRM_USERNAME: admin
+    #   #SUITECRM_PASSWORD: admin
+    #   SUITECRM_DATABASE_USER: root
+    #   SUITECRM_DATABASE_PASSWORD: root
+    #   SUITECRM_DATABASE_NAME: crmdb
     networks:
       - my-docker-network
     ports:
       # We need 8080 for the REST API of SuiteCRM and 8443 for the web interface on HTTPS.
       - "8080:8080"
       - "8443:8443"
+      - "8086:80"
     depends_on:
       - mariadb
-      - james
-
-  joomla:
-    image: joomla:5.3.2-php8.3-apache
-    container_name: joomla
-    ports:
-      # We need 8081 for the web-API of Joomla
-      - "8081:80"
-    environment:
-      JOOMLA_DB_HOST: mariadb
-      JOOMLA_DB_USER: joomla_db_user
-      JOOMLA_DB_PASSWORD: dycgaq-fimnIh-hujka8
-      JOOMLA_DB_NAME: joomla_db
-      JOOMLA_ADMIN_USER: Joomla_Admin
-      JOOMLA_ADMIN_USERNAME: admwinther
-      JOOMLA_ADMIN_PASSWORD: admin
-      JOOMLA_ADMIN_EMAIL: joomla@awin.dk
-    volumes:
-      - /home/ec2-user/volumes/joomla:/var/www/html
-      - /home/ec2-user/php.ini:/usr/local/etc/php/php.ini
-      # - /home/ec2-user/configuration.php:/var/www/html/configuration.php
-      # - /home/ec2-user/.htaccess:/var/www/html/.htaccess
-    networks:
-      - my-docker-network
-    depends_on:
-        - mariadb
-        - james
-
-  rest:
-     image: restapi:latest
-     container_name: rest
-     ports:
-       - "8082:8080"
-     environment:
-       spring.profiles.active: "prod"
-       TEST_ENV_VAR: "TestValue-Terraform-575458535"
-       CRM_API_AuthenticationClientId: a98a1d68-e5b5-d1b2-6942-68d30e7c54e7
-       CRM_API_AuthenticationClientSecret: Mahi Baghche 8?
-       JOOMLA_API_TOKEN: c2hhMjU2Ojk4NTpmNzhkNWFlMWExYTZkOTNlOTEyYTUxZjljNTgxNTAzZGMzYTYwMGY1ZWVmZWM1ZjM2NTIwNTAyZmQyZjU5MjBk
-       NEW_EMAIL_REQUEST_SECRET_KEY: "supersecretkey_you_store_in_env_or_config"
-  #   volumes:
-  #     - /home/ec2-user/volumes/wordpress:/var/www/html
-     networks:
-       - my-docker-network
-     depends_on:
-         - mariadb
-
-
-  # wordpress:
-  #   image: wordpress:php8.4-apache
-  #   container_name: wordpress
-  #   ports:
-  #     # We need 8081 for the web-API of Joomla
-  #     - "8081:80"
-  #   environment:
-  #     WORDPRESS_DB_HOST: mariadb
-  #     WORDPRESS_DB_USER: wp_db_user
-  #     WORDPRESS_DB_PASSWORD: MaV59-8O%DH-3*J2f-N^y6z-CAypw
-  #     WORDPRESS_DB_NAME: wp_db
-  #   volumes:
-  #     - /home/ec2-user/volumes/wordpress:/var/www/html
-  #   networks:
-  #     - my-docker-network
-  #   depends_on:
-  #       - mariadb
-
-
-  ngx:
-      image: nginx:stable-alpine3.21-perl
-      container_name: ngx
-      volumes:
-          - /home/ec2-user/nginx.conf:/etc/nginx/nginx.conf
-
-          - /home/ec2-user/crm_https_ssl_certificate.crt:/etc/nginx/crm_ssl-certificate.crt
-          - /home/ec2-user/crm_https_ssl_private_key.key:/etc/nginx/crm_ssl_certificate_key.key
-          - /home/ec2-user/crm_https_ssl_chain_certificate.crt:/etc/nginx/crm_ssl_ca_certificate.crt
-
-
-          - /home/ec2-user/www_https_ssl_fullchain.crt:/etc/nginx/www_https_ssl_fullchain.crt
-          - /home/ec2-user/www_https_ssl_private_key.key:/etc/nginx/www_ssl_certificate_key.key
-
-          - /home/ec2-user/api_https_ssl_certificate.crt:/etc/nginx/api_https_ssl_certificate.crt
-          - /home/ec2-user/api_https_ssl_private_key.key:/etc/nginx/api_https_ssl_private_key.key
-          - /home/ec2-user/api_https_ssl_fullchain.crt:/etc/nginx/api_https_ssl_fullchain.crt
-          - /home/ec2-user/api_https_ssl_chain_certificate.crt:/etc/nginx/api_https_ssl_chain_certificate.crt
-      networks:
-          - my-docker-network
-      ports:
-          #NGINX must be in control of the ports 80 and 443.
-          #If traffic from other containers should be redirected to port 80 or 443, then the nginx.conf file must be edited.
-          - "80:80"
-          - "443:443"
-      depends_on:
-          - suitecrm
-          - joomla
-          # - wordpress
-
-
 
 networks:
   my-docker-network:

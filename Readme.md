@@ -13,6 +13,16 @@ This repository provides a Dockerfile for setting up a SuiteCRM environment usin
     - Extract the contents of the `.zip` file.
     - Rename the extracted folder to `SuiteCRM`.
 
+1.1 **Implement the database and admin credentials in the .env file:**
+    -open the SuiteCRM folder, (the one you just unzipped) and add the dfollowing lines to it:
+    ```
+        SUITECRM_USERNAME=${SUITECRM_USERNAME}
+        SUITECRM_PASSWORD=${SUITECRM_PASSWORD}
+        DB_USERNAME=${SUITECRM_DATABASE_USER}
+        DB_PASSWORD=${SUITECRM_DATABASE_PASSWORD}
+        DB_NAME=${SUITECRM_DATABASE_NAME}
+    ```
+
 2. **Build the Docker image:**
     ```sh
     docker build -t suitecrm:8.6.0 .
@@ -24,3 +34,9 @@ This repository provides a Dockerfile for setting up a SuiteCRM environment usin
 - Ensure all files are in the correct directory before building the image.
 
 ---
+
+
+3. **Implement Env. variables:**
+The config variables of SuiteCRM are stored in file : /var/www/html/public/legacy/config.php
+So, the first thing is to have a dummy config.php file but with the correct credentials in /var/www/html/public/legacy BUT, SuiteCRM make IDs for many components, for example all of the email templates have an ID that are generated at the time of creating the tables!
+First we need composer in suiteCRM image. so we need to execute:
