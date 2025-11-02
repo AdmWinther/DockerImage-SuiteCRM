@@ -15,15 +15,16 @@ services:
       - my-docker-network
 
   suitecrm:
-    image: ggg:latest
+    image: ddd/dd
     container_name: crm
-    # environment:
-    #   ALLOW_EMPTY_PASSWORD: no
-    #   #SUITECRM_USERNAME: admin
-    #   #SUITECRM_PASSWORD: admin
-    #   SUITECRM_DATABASE_USER: root
-    #   SUITECRM_DATABASE_PASSWORD: root
-    #   SUITECRM_DATABASE_NAME: crmdb
+    environment:
+        DB_HOST: mariadb
+        ALLOW_EMPTY_PASSWORD: no
+        SUITECRM_USERNAME: admin
+        SUITECRM_PASSWORD: admin
+        SUITECRM_DATABASE_USER: root
+        SUITECRM_DATABASE_PASSWORD: root
+        SUITECRM_DATABASE_NAME: crm_db
     networks:
       - my-docker-network
     ports:

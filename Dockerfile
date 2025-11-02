@@ -75,7 +75,7 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY docker-entrypoint.sh /var/www/html/docker-entrypoint.sh
 RUN chmod +x /var/www/html/docker-entrypoint.sh
 
-# ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
+ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
 
 
 # Expose the web server port

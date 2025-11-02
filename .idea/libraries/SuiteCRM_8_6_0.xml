@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SuiteCRM-8.6.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/SuiteCRM-8.6.0.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
