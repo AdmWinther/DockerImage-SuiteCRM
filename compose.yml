@@ -18,13 +18,15 @@ services:
     image: ddd/dd
     container_name: crm
     environment:
-        DB_HOST: mariadb
+        DB_HOST_ADDRESS: mariadb
         ALLOW_EMPTY_PASSWORD: no
-        SUITECRM_USERNAME: admin
-        SUITECRM_PASSWORD: admin
-        SUITECRM_DATABASE_USER: root
-        SUITECRM_DATABASE_PASSWORD: root
-        SUITECRM_DATABASE_NAME: crm_db
+        ADMIN_USERNAME: admin
+        ADMIN_PASSWORD: admin
+        DB_USERNAME: root
+        DB_PASSWORD: root
+        DB_PORT: 3306
+        DB_NAME: crm_db
+        SITE_URL: http://localhost:8086
     networks:
       - my-docker-network
     ports:

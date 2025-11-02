@@ -31,7 +31,7 @@ mkdir -p /var/www/html/just_a_test
     #      sleep 5
     #  done
 # print the environment variable, DB_HOST
-    echo "Database Host: ${DB_HOST:-ghghghgh}"
+    echo "Database Host: ${DB_HOST_ADDRESS:-ghghghgh}"
 
     # Install SuiteCRM using CLI-Installer
     # && ./bin/console suitecrm:app:install -u "admin_username" -p "admin_password" -U "db_user" -P "db_password" -H "db_host" -N "db_name" -S "site_url" -d "demo_data" \
@@ -41,14 +41,14 @@ mkdir -p /var/www/html/just_a_test
      cd /var/www/html
 
      php bin/console suitecrm:app:install \
-       --db_username "root" \
-       --db_password "root" \
-       --db_host "mariadb" \
-       --db_port "3306" \
-       --db_name "crm_db" \
-       --site_username "admin" \
-       --site_password "admin" \
-       --site_host "http://localhost" \
+       --db_username "${DB_USERNAME}" \
+       --db_password "${DB_PASSWORD}" \
+       --db_host "${DB_HOST_ADDRESS}" \
+       --db_port "${DB_PORT}" \
+       --db_name "${DB_NAME}" \
+       --site_username "${ADMIN_USERNAME}" \
+       --site_password "${ADMIN_PASSWORD}" \
+       --site_host "${SITE_URL}" \
        --demoData "no"
 
      echo "✅ SuiteCRM installation complete."
