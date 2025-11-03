@@ -1,25 +1,37 @@
 #!/bin/bash
 set -e
 
-# # Install Composer
+# No need to install Composer in the root. Only in /var/www/html/public/legacy if you need to use API or add custom modules.
+#We could move the DOWNLOAD part to the Dockerfile but it causes a glitch. We then would need to restart the container to have it working.
+#Therefore we keep it here for now.
+# We need to install Composer to use API endpoints.
 cd /var/www/html/public/legacy
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 php -r "unlink('composer-setup.php');"
 
-# # Install Composer dependencies for SuiteCRM
+## # Install Composer dependencies for SuiteCRM
 cd /var/www/html/public/legacy \
-    && composer install --no-dev --optimize-autoloader
-
-
+    && composer install --no-dev --optimize-autoloader --classmap-authoritative
 
 ############################################
-
+#Set the permissions:
+#This part in the beginning was in Dockerfile but it did not work.
+# So we moved it here.
+#echo "🔧 Setting permissions for SuiteCRM..."
+#Only the first one is enough for now. If we run the rest it causes  a crash.
+#chown -R www-data:www-data /var/www/html
+#chmod -R 775 /var/www/html/public/legacy/cache \
+#             /var/www/html/public/legacy/custom \
+#             /var/www/html/public/legacy/modules \
+#             /var/www/html/public/legacy/themes \
+#             /var/www/html/public/legacy/data \
+#             /var/www/html/public/legacy/upload
+#             \
+#             /var/www/html/public/legacy/config_override.php    #It does not exist yet at this point.
 
 # Print a message for logs
 echo "🔧 Starting SuiteCRM container..."
-
-mkdir -p /var/www/html/just_a_test
 
 # Check if SuiteCRM is already installed
  if [ ! -f /var/www/html/public/legacy/config.php ]; then
@@ -55,6 +67,9 @@ mkdir -p /var/www/html/just_a_test
  else
      echo "✅ SuiteCRM already installed. Skipping setup."
  fi
+
+echo "🔧 Setting permissions for SuiteCRM..."
+chown -R www-data:www-data /var/www/html
 
 # # Start Apache in the foreground
 exec "$@"

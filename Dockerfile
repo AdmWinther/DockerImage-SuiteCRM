@@ -9,7 +9,7 @@ FROM php:8.0-apache
 # Configure PHP settings by making a custom ini file.
 RUN echo "upload_max_filesize = 64M" > /usr/local/etc/php/conf.d/custom.ini \
     && echo "post_max_size = 64M" >> /usr/local/etc/php/conf.d/custom.ini \
-    && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "date.timezone = CET" >> /usr/local/etc/php/conf.d/custom.ini
 # RUN echo "extension=imap" > /usr/local/etc/php/conf.d/imap.ini
@@ -69,8 +69,10 @@ RUN a2enmod rewrite
 COPY ./SuiteCRM /var/www/html/
 
 # Set correct permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+RUN cd /var/www/html
+RUN chown -R www-data:www-data . \
+    && chmod -R 755 . \
+    && chmod -R 775 ./cache
 
 COPY docker-entrypoint.sh /var/www/html/docker-entrypoint.sh
 RUN chmod +x /var/www/html/docker-entrypoint.sh

@@ -15,7 +15,7 @@ services:
       - my-docker-network
 
   suitecrm:
-    image: ddd/dd
+    image: admwinther/suitecrm:8.6.0
     container_name: crm
     environment:
         DB_HOST_ADDRESS: mariadb
