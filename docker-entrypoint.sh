@@ -71,6 +71,11 @@ echo "🔧 Starting SuiteCRM container..."
 echo "🔧 Setting permissions for SuiteCRM..."
 chown -R www-data:www-data /var/www/html
 
+echo "Enabling Apache modules..."
+a2enmod ssl && a2enmod headers && a2ensite default-ssl
+
 # # Start Apache in the foreground
+echo "🚀 Starting Apache..."
 exec "$@"
 ############################################
+
