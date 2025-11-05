@@ -14,43 +14,24 @@ php -r "unlink('composer-setup.php');"
 cd /var/www/html/public/legacy \
     && composer install --no-dev --optimize-autoloader --classmap-authoritative
 
-############################################
-#Set the permissions:
-#This part in the beginning was in Dockerfile but it did not work.
-# So we moved it here.
-#echo "🔧 Setting permissions for SuiteCRM..."
-#Only the first one is enough for now. If we run the rest it causes  a crash.
-#chown -R www-data:www-data /var/www/html
-#chmod -R 775 /var/www/html/public/legacy/cache \
-#             /var/www/html/public/legacy/custom \
-#             /var/www/html/public/legacy/modules \
-#             /var/www/html/public/legacy/themes \
-#             /var/www/html/public/legacy/data \
-#             /var/www/html/public/legacy/upload
-#             \
-#             /var/www/html/public/legacy/config_override.php    #It does not exist yet at this point.
 
 # Print a message for logs
 echo "🔧 Starting SuiteCRM container..."
 
 # Check if SuiteCRM is already installed
  if [ ! -f /var/www/html/public/legacy/config.php ]; then
-     echo "🧩 SuiteCRM not installed — running initial setup..."
+    echo "🧩 SuiteCRM not installed — running initial setup..."
 
-     # Wait for the database (optional but helpful)
-    #  until nc -z ${DB_HOST:-mariadb} ${DB_PORT:-3306}; do
-    #      echo "⏳ Waiting for database at ${DB_HOST:-mariadb}:${DB_PORT:-3306}..."
-    #      sleep 5
-    #  done
-# print the environment variable, DB_HOST
+    # Wait for the database (optional but helpful)
+    until nc -z ${DB_HOST:-mariadb} ${DB_PORT:-3306}; do
+      echo "⏳ Waiting for database at ${DB_HOST:-mariadb}:${DB_PORT:-3306}..."
+      sleep 5
+    done
+
+    # print the environment variable, DB_HOST
     echo "Database Host: ${DB_HOST_ADDRESS:-ghghghgh}"
 
-    # Install SuiteCRM using CLI-Installer
-    # && ./bin/console suitecrm:app:install -u "admin_username" -p "admin_password" -U "db_user" -P "db_password" -H "db_host" -N "db_name" -S "site_url" -d "demo_data" \
-    # RUN ./bin/console suitecrm:app:install -u "admin_username" -p "admin_password" -U "root" -P "root" -H "mariadb" -N "new_db" -S "site_url" -d "demo_data"
-
-     # Run the installer with environment variables
-     cd /var/www/html
+    cd /var/www/html
 
      php bin/console suitecrm:app:install \
        --db_username "${DB_USERNAME}" \
@@ -70,9 +51,6 @@ echo "🔧 Starting SuiteCRM container..."
 
 echo "🔧 Setting permissions for SuiteCRM..."
 chown -R www-data:www-data /var/www/html
-
-echo "Enabling Apache modules..."
-a2enmod ssl && a2enmod headers && a2ensite default-ssl
 
 # # Start Apache in the foreground
 echo "🚀 Starting Apache..."
