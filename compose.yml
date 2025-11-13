@@ -2,25 +2,23 @@
 name: Thusia
 
 services:
-  mariadb:
+  db:
     image: mariadb:10.6
-    container_name: mariadb
+    container_name: db
     restart: always
     ports:
       - "3306:3306"
-    volumes:
-        - ./mariadb_data:/var/lib/mysql
     environment:
       ALLOW_EMPTY_PASSWORD: yes
       MARIADB_ROOT_PASSWORD: root
     networks:
       - my-docker-network
 
-  suitecrm:
-    image: admwinther/suitecrm:8.6.0
+  crm:
+    image: optimize:8.6.0
     container_name: crm
     environment:
-        DB_HOST_ADDRESS: mariadb
+        DB_HOST: db
         ALLOW_EMPTY_PASSWORD: no
         ADMIN_USERNAME: admin
         ADMIN_PASSWORD: admin
@@ -29,6 +27,8 @@ services:
         DB_PORT: 3306
         DB_NAME: crm_db
         SITE_URL: http://localhost:8086
+    volumes:
+      - crm:/var/www/html
     networks:
       - my-docker-network
     ports:
@@ -37,8 +37,9 @@ services:
       - "8443:8443"
       - "8086:80"
     depends_on:
-      - mariadb
-
+      - db
+volumes:
+  crm:
 networks:
   my-docker-network:
 

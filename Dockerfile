@@ -46,6 +46,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     libicu-dev \
     icu-devtools \
+    netcat-traditional \
 && docker-php-ext-configure gd --with-freetype --with-jpeg \
 && docker-php-ext-configure ldap \
 && docker-php-ext-install gd ldap mysqli zip opcache mbstring bcmath xml intl soap pdo pdo_mysql \
@@ -67,15 +68,22 @@ RUN a2enmod rewrite
 
 # Copy SuiteCRM files (you can also mount them via a volume)
 COPY ./SuiteCRM /var/www/html/
+COPY docker-entrypoint.sh /var/www/html/docker-entrypoint.sh
+
+## # Download Composer and install it
+WORKDIR /var/www/html/public/legacy/
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');" \
+    && composer install --no-dev --optimize-autoloader --classmap-authoritative
+
 
 # Set correct permissions
-RUN cd /var/www/html
+WORKDIR /var/www/html
 RUN chown -R www-data:www-data . \
     && chmod -R 755 . \
-    && chmod -R 775 ./cache
-
-COPY docker-entrypoint.sh /var/www/html/docker-entrypoint.sh
-RUN chmod +x /var/www/html/docker-entrypoint.sh
+    && chmod -R 775 ./cache \
+    && chmod +x /var/www/html/docker-entrypoint.sh
 
 ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
 
