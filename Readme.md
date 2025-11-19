@@ -46,3 +46,12 @@ First we need composer in suiteCRM image. so we need to execute:
     ```sh
     docker push admwinther/suitecrm:8.6.0
     ```
+   
+
+5. **Run the Docker container:**
+    ```sh
+    docker run -d -p 8080:80 --name suitecrm admwinther/suitecrm:8.6.0
+    ```
+   To make your container persistent, you can mount a volume for SuiteCRM config file in:
+    ```/var/www/html/your_config_file_here```
+if you do not have any config file yet, the container will create one for you at the first run and you just need to keep mounting the same folder in future runs.
