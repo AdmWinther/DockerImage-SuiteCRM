@@ -51,7 +51,8 @@ RUN apt-get update && apt-get install -y \
 && docker-php-ext-configure ldap \
 && docker-php-ext-install gd ldap mysqli zip opcache mbstring bcmath xml intl soap pdo pdo_mysql \
 && apt-get clean \
-&& rm -rf /var/lib/apt/lists/*
+&& rm -rf /var/lib/apt/lists/* \
+&& mkdir -p /var/www/html/your_config_file_here
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
 /etc/apache2/sites-available/*.conf \

@@ -1,13 +1,11 @@
 
-name: Thusia
+name: TestImage
 
 services:
   db:
     image: mariadb:10.6
     container_name: db
     restart: always
-    ports:
-      - "3306:3306"
     environment:
       ALLOW_EMPTY_PASSWORD: yes
       MARIADB_ROOT_PASSWORD: root
@@ -15,7 +13,7 @@ services:
       - my-docker-network
 
   crm:
-    image: optimize:8.6.0
+    image: admwinther/suitecrm:8.6.0
     container_name: crm
     environment:
         DB_HOST: db
@@ -28,7 +26,7 @@ services:
         DB_NAME: crm_db
         SITE_URL: http://localhost:8086
     volumes:
-      - crm:/var/www/html
+      - ./not:/var/www/html/your_config_file_here
     networks:
       - my-docker-network
     ports:

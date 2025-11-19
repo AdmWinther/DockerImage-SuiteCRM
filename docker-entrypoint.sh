@@ -25,9 +25,12 @@ done
 # Print a message for logs
 echo "🔧 Starting SuiteCRM container..."
 
-
-# Check if SuiteCRM is already installed
-# if [ ! -f /var/www/html/public/legacy/config.php ]; then
+#Check if user has loaded a config.php file into /var/www/html/config, if it is there, copy it to the right location
+if [ -f "/var/www/html/your_config_file_here/config.php" ]; then
+  echo "📁 Found user-provided config.php in /var/www/html/your_config_file_here/ — copying to SuiteCRM directory..."
+  cp -u /var/www/html/your_config_file_here/config.php /var/www/html/public/legacy/config.php
+  echo "✅ config.php copied successfully."
+fi
 
 CONFIG_FILE="/var/www/html/public/legacy/config.php"
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -47,15 +50,12 @@ if [ ! -f "$CONFIG_FILE" ]; then
      --demoData "no"
 
   echo "✅ SuiteCRM installation complete."
+  # Copy the generated config.php to the persistent location
+  echo "💾 Saving generated config.php to persistent volume..."
+  cp "$CONFIG_FILE" /var/www/html/your_config_file_here/config.php
+  echo "✅ config.php saved successfully."
 else
   echo "✅ Existing config.php found — skipping installation."
-fi
-
-if [ -f "$CONFIG_FILE" ]; then
-  echo "💾 Ensuring config.php is persisted in volume..."
-  mkdir -p /var/www/html/public/legacy/test/
-  cp -u "$CONFIG_FILE" /var/www/html/public/legacy/test/config.php
-  echo "✅ config.php is up to date."
 fi
 
 chown -R www-data:www-data .
