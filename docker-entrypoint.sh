@@ -8,9 +8,6 @@ until nc -z ${DB_HOST:-mariadb} ${DB_PORT:-3306}; do
   sleep 5
 done
 
-echo "Copying SuiteCRM source files to /var/www/html/..."
-cp -R /home/suitecrm_source/* /var/www/html/
-cp /home/suitecrm_source/.env /var/www/html/.env
 
 
 ## Print a message for logs
@@ -29,6 +26,12 @@ cp /home/suitecrm_source/.env /var/www/html/.env
 #
 CONFIG_FILE="/var/www/html/public/legacy/config.php"
 if [ ! -f "$CONFIG_FILE" ]; then
+
+  echo "No persistent data found for SuiteCRM installation."
+  echo "Copying SuiteCRM source files to /var/www/html/..."
+  cp -R /home/suitecrm_source/* /var/www/html/
+  cp /home/suitecrm_source/.env /var/www/html/.env
+
   echo "⚙️  No existing config.php found — running SuiteCRM installation..."
   echo "🧩 Running SuiteCRM installer..."
   cd /var/www/html

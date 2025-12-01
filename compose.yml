@@ -25,8 +25,8 @@ services:
         DB_PORT: 3306
         DB_NAME: crm_db
         SITE_URL: http://localhost:8086
-#    volumes:
-#      - ./not:/var/www/html/your_config_file_here
+    volumes:
+      - ./persist:/var/www/html
     networks:
       - my-docker-network
     ports:
