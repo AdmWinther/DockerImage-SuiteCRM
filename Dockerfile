@@ -47,13 +47,13 @@ WORKDIR /var/www/html
 RUN a2enmod rewrite
 
 RUN mkdir -p /var/www/html/your_config_file_here \
-&& mkdir -p /var/www/html/source
+&& mkdir -p /home/suitecrm_source
 
 # Copy SuiteCRM files (you can also mount them via a volume)
-COPY ./SuiteCRM /var/www/html/source/
+COPY ./SuiteCRM /home/suitecrm_source
 
 ## # Download Composer and install it
-WORKDIR /var/www/html/source/public/legacy/
+WORKDIR /home/suitecrm_source
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');" \
@@ -63,10 +63,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Set correct permissions
 WORKDIR /var/www/html
 
-COPY docker-entrypoint.sh /var/www/html/source/docker-entrypoint.sh
-RUN chmod +x /var/www/html/source/docker-entrypoint.sh
+COPY docker-entrypoint.sh /home/suitecrm_source/docker-entrypoint.sh
+RUN chmod +x /home/suitecrm_source/docker-entrypoint.sh
 
-ENTRYPOINT ["/var/www/html/source/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/suitecrm_source/docker-entrypoint.sh"]
 
 
 # Expose the web server port

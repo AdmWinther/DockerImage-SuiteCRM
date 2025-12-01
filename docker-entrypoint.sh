@@ -9,8 +9,8 @@ until nc -z ${DB_HOST:-mariadb} ${DB_PORT:-3306}; do
 done
 
 echo "Copying SuiteCRM source files to /var/www/html/..."
-cp -R /var/www/html/source/* /var/www/html/
-cp /var/www/html/source/.env /var/www/html/.env
+cp -R /home/suitecrm_source/* /var/www/html/
+cp /home/suitecrm_source/.env /var/www/html/.env
 
 
 ## Print a message for logs
@@ -47,12 +47,10 @@ if [ ! -f "$CONFIG_FILE" ]; then
 
      echo "🔧 Ensuring correct permissions for SuiteCRM files..."
      cd /var/www/html/
+     echo "🔧 Setting ownership to www-data..."
      chown -R www-data:www-data .
+      echo "🔧 Setting file permissions..."
      chmod -R 755 .
-     chmod -R 775 ./cache
-#     chown -R www-data:www-data public/legacy/config.php
-#     chown -R www-data:www-data public/legacy/cache/
-#     chown -R www-data:www-data cache/
      echo "✅ Permissions set."
 fi
 #  echo "✅ SuiteCRM installation complete."
