@@ -13,7 +13,7 @@ services:
       - my-docker-network
 
   crm:
-    image: admwinther/suitecrm:8.6.0
+    image: ttt
     container_name: crm
     environment:
         DB_HOST: db
@@ -25,8 +25,8 @@ services:
         DB_PORT: 3306
         DB_NAME: crm_db
         SITE_URL: http://localhost:8086
-    volumes:
-      - ./not:/var/www/html/your_config_file_here
+#    volumes:
+#      - ./not:/var/www/html/your_config_file_here
     networks:
       - my-docker-network
     ports:
@@ -36,8 +36,8 @@ services:
       - "8086:80"
     depends_on:
       - db
-volumes:
-  crm:
+#volumes:
+#  crm:
 networks:
   my-docker-network:
 

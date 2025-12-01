@@ -2,36 +2,31 @@
 set -e
 
 
-# We do not need it. we will do it in the Dockerfile
-# No need to install Composer in the root. Only in /var/www/html/public/legacy if you need to use API or add custom modules.
-#We could move the DOWNLOAD part to the Dockerfile but it causes a glitch. We then would need to restart the container to have it working.
-#Therefore we keep it here for now.
-# We need to install Composer to use API endpoints.
-#cd /var/www/html/public/legacy
-#php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-#php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-#php -r "unlink('composer-setup.php');"
-#
-### # Install Composer dependencies for SuiteCRM
-#cd /var/www/html/public/legacy \
-#    && composer install --no-dev --optimize-autoloader --classmap-authoritative
-
 # Wait for the database (optional but helpful)
 until nc -z ${DB_HOST:-mariadb} ${DB_PORT:-3306}; do
   echo "⏳ Waiting for database at ${DB_HOST:-mariadb}:${DB_PORT:-3306}..."
   sleep 5
 done
 
-# Print a message for logs
-echo "🔧 Starting SuiteCRM container..."
+echo "Copying SuiteCRM source files to /var/www/html/..."
+cp -R /var/www/html/source/* /var/www/html/
+cp /var/www/html/source/.env /var/www/html/.env
 
-#Check if user has loaded a config.php file into /var/www/html/config, if it is there, copy it to the right location
-if [ -f "/var/www/html/your_config_file_here/config.php" ]; then
-  echo "📁 Found user-provided config.php in /var/www/html/your_config_file_here/ — copying to SuiteCRM directory..."
-  cp -u /var/www/html/your_config_file_here/config.php /var/www/html/public/legacy/config.php
-  echo "✅ config.php copied successfully."
-fi
 
+## Print a message for logs
+#echo "🔧 Starting SuiteCRM container..."
+#
+##Check if user has loaded a config.php file into /var/www/html/config, if it is there, copy it to the right location
+#if [ -f "/var/www/html/your_config_file_here/config.php" ]; then
+#  echo "📁 Found user-provided config.php in /var/www/html/your_config_file_here/ — copying to SuiteCRM directory..."
+#  cp -u /var/www/html/your_config_file_here/config.php /var/www/html/public/legacy/config.php
+#  echo "✅ config.php copied successfully."
+#  echo "💾 Saving provided cache directory"
+#  cp -u /var/www/html/your_cache_directory_here /var/www/html/public/legacy/cache/
+#  cp -u /var/www/html/your_cache_directory_here /var/www/html/cache/
+#  echo "✅ cache directory copied successfully."
+#fi
+#
 CONFIG_FILE="/var/www/html/public/legacy/config.php"
 if [ ! -f "$CONFIG_FILE" ]; then
   echo "⚙️  No existing config.php found — running SuiteCRM installation..."
@@ -49,16 +44,30 @@ if [ ! -f "$CONFIG_FILE" ]; then
      --site_host "${SITE_URL}" \
      --demoData "no"
 
-  echo "✅ SuiteCRM installation complete."
-  # Copy the generated config.php to the persistent location
-  echo "💾 Saving generated config.php to persistent volume..."
-  cp "$CONFIG_FILE" /var/www/html/your_config_file_here/config.php
-  echo "✅ config.php saved successfully."
-else
-  echo "✅ Existing config.php found — skipping installation."
-fi
 
-chown -R www-data:www-data .
+     echo "🔧 Ensuring correct permissions for SuiteCRM files..."
+     cd /var/www/html/
+     chown -R www-data:www-data .
+     chmod -R 755 .
+     chmod -R 775 ./cache
+#     chown -R www-data:www-data public/legacy/config.php
+#     chown -R www-data:www-data public/legacy/cache/
+#     chown -R www-data:www-data cache/
+     echo "✅ Permissions set."
+fi
+#  echo "✅ SuiteCRM installation complete."
+#  # Copy the generated config.php to the persistent location
+#  echo "💾 Saving generated config.php to persistent volume..."
+#  cp "$CONFIG_FILE" /var/www/html/your_config_file_here/config.php
+#  echo "✅ config.php saved successfully."
+#  echo "💾 Saving generated content in cache directory to persistent volume..."
+#  cp -R /var/www/html/public/legacy/cache/ /var/www/html/your_cache_directory_here
+#  cp -R /var/www/html/cache/ /var/www/html/your_cache_directory_here
+#  echo "✅ Cache saved successfully."
+#else
+#  echo "✅ Existing config.php found — skipping installation."
+#fi
+#
 
 # # Start Apache in the foreground
 echo "🚀 Starting Apache..."
