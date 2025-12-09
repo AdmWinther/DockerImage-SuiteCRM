@@ -46,16 +46,18 @@ if [ ! -f "$CONFIG_FILE" ]; then
      --site_password "${ADMIN_PASSWORD}" \
      --site_host "${SITE_URL}" \
      --demoData "no"
-
-
-     echo "🔧 Ensuring correct permissions for SuiteCRM files..."
-     cd /var/www/html/
-     echo "🔧 Setting ownership to www-data..."
-     chown -R www-data:www-data .
-      echo "🔧 Setting file permissions..."
-     chmod -R 755 .
-     echo "✅ Permissions set."
 fi
+
+ echo "🔧 Ensuring correct permissions for SuiteCRM files regardless of persistent or not."
+ cd /var/www/html/
+ echo "🔧 Setting ownership to www-data..."
+ chown -R www-data:www-data .
+  echo "🔧 Setting file permissions..."
+ chmod -R 755 .
+ chmod -R 660 /var/www/html/public/legacy/Api/V8/OAuth2/private.key
+ chmod -R 660 /var/www/html/public/legacy/Api/V8/OAuth2/public.key
+ echo "✅ Permissions set."
+
 #  echo "✅ SuiteCRM installation complete."
 #  # Copy the generated config.php to the persistent location
 #  echo "💾 Saving generated config.php to persistent volume..."
