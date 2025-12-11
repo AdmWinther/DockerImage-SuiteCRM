@@ -11,7 +11,12 @@ RUN echo "upload_max_filesize = 64M" > /usr/local/etc/php/conf.d/custom.ini \
     && echo "post_max_size = 64M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/custom.ini \
     && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/custom.ini \
-    && echo "date.timezone = CET" >> /usr/local/etc/php/conf.d/custom.ini
+    && echo "date.timezone = CET" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "display_errors = Off" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "display_startup_errors = Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "error_reporting = E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "log_errors = On" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "error_log = /var/log/php_errors.log" >> /usr/local/etc/php/conf.d/custom.ini
 
 RUN apt-get update && apt-get install -y \
     libpng-dev \
