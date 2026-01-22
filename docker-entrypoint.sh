@@ -54,8 +54,14 @@ fi
  chown -R www-data:www-data .
   echo "🔧 Setting file permissions..."
  chmod -R 755 .
- chmod -R 660 /var/www/html/public/legacy/Api/V8/OAuth2/private.key
- chmod -R 660 /var/www/html/public/legacy/Api/V8/OAuth2/public.key
+
+ if [ -f "/var/www/html/public/legacy/Api/V8/OAuth2/private.key" ]; then
+    chmod 660 /var/www/html/public/legacy/Api/V8/OAuth2/private.key
+ fi
+ if [ -f "/var/www/html/public/legacy/Api/V8/OAuth2/public.key" ]; then
+    chmod 660 /var/www/html/public/legacy/Api/V8/OAuth2/public.key
+ fi
+
  echo "✅ Permissions set."
 
 #  echo "✅ SuiteCRM installation complete."
@@ -76,4 +82,3 @@ fi
 echo "🚀 Starting Apache..."
 exec "$@"
 ############################################
-
