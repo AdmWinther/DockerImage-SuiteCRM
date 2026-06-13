@@ -2,7 +2,7 @@
 
 A custom Docker image for **SuiteCRM 8.6.0**, built for the [Thusia platform](https://github.com/AdmWinther/Thusia-architecture), where SuiteCRM runs as one container in a Docker Compose stack.
 
-The official SuiteCRM images didn't fit the deployment model (fully environment-variable-driven configuration, automated first-run installation), so this image builds SuiteCRM from source with a custom entrypoint that handles installation and configuration at container start.
+The Bitnami SuiteCRM images was not available all of a sudden. I have already made my app using their image. So, there is one easy way around it, "To Make My Own Image!" simple as that. So this image builds SuiteCRM from source with a custom entrypoint that handles installation and configuration at container start.
 
 ## How it works
 
