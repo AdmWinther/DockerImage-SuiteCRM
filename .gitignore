@@ -4,4 +4,5 @@ crm_cache/*
 crm_custom/*
 crm_data/*
 mariadb_data/*
+.idea/*
 
