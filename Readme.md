@@ -34,7 +34,7 @@ docker run -d -p 8086:80 \
   <your-namespace>/suitecrm:8.6.0
 ```
 
-Or use the included **`compose.example.yml`** — a minimal local test stack (MariaDB + this image) with placeholder credentials, for development only.
+Or use the included **`compose.yml`** — a minimal local test stack (MariaDB + this image) with placeholder credentials, for development only.
 
 ## Why build a custom image?
 
