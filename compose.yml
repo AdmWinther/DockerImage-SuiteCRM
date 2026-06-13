@@ -1,5 +1,5 @@
 
-name: TestImage
+name: YourProjectName
 
 services:
   db:
@@ -13,7 +13,7 @@ services:
       - my-docker-network
 
   crm:
-    image: ttt
+    image: SuiteCRM:8.6.0
     container_name: crm
     environment:
         DB_HOST: db
